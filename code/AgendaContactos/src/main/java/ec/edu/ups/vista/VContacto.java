@@ -4,19 +4,46 @@
  */
 package ec.edu.ups.vista;
 
+import ec.edu.ups.controlador.GestionarContacto;
+import ec.edu.ups.modelo.Contacto;
+import javax.swing.table.DefaultTableModel;
+
 /**
  *
  * @author Core i5 11va
  */
 public class VContacto extends javax.swing.JFrame {
 
+    private DefaultTableModel modelo;
+    private GestionarContacto lstContactos;
+    private Contacto contacto;
+    private int numFila;
+    
     /**
      * Creates new form VContacto
      */
-    public VContacto() {
+    public VContacto(DefaultTableModel modelo, GestionarContacto lstContactos) {
         initComponents();
         this.setDefaultCloseOperation( javax.swing.WindowConstants.HIDE_ON_CLOSE );
         this.setLocationRelativeTo(null);
+        
+        this.lstContactos = lstContactos;
+        this.contacto = null;
+        this.modelo = modelo;
+    }
+    
+    public VContacto(DefaultTableModel modelo, Contacto contacto, int numFila) {
+        initComponents();
+        this.setDefaultCloseOperation( javax.swing.WindowConstants.HIDE_ON_CLOSE );
+        this.setLocationRelativeTo(null);        
+        
+        this.modelo = modelo;
+        this.contacto = contacto;
+        this.numFila = numFila;
+        
+        this.txtNombre.setText( this.contacto.getNombre() );
+        this.txtApellido.setText( this.contacto.getApellido() );
+        this.txtTelefono.setText( this.contacto.getTelefono() );        
     }
 
     /**
@@ -60,6 +87,11 @@ public class VContacto extends javax.swing.JFrame {
 
         btnGuardar.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
         btnGuardar.setText("Guardar");
+        btnGuardar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnGuardarActionPerformed(evt);
+            }
+        });
 
         btnCancelar.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
         btnCancelar.setText("Cancelar");
@@ -134,40 +166,27 @@ public class VContacto extends javax.swing.JFrame {
         this.setVisible(false);
     }//GEN-LAST:event_btnCancelarActionPerformed
 
-    /**
-     * @param args the command line arguments
-     */
-    public static void main(String args[]) {
-        /* Set the Nimbus look and feel */
-        //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
-        /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
-         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
-         */
-        try {
-            for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
-                if ("Nimbus".equals(info.getName())) {
-                    javax.swing.UIManager.setLookAndFeel(info.getClassName());
-                    break;
-                }
-            }
-        } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(VContacto.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(VContacto.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(VContacto.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(VContacto.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+    private void btnGuardarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnGuardarActionPerformed
+        if (contacto != null) {
+            this.contacto.setNombre( this.txtNombre.getText() );
+            this.contacto.setApellido( this.txtApellido.getText() );
+            this.contacto.setTelefono( this.txtTelefono.getText() );
+            this.lstContactos.modificar( this.contacto );
+            
+            this.modelo.setValueAt(this.contacto.getNombre(), this.numFila, 0);
+            this.modelo.setValueAt(this.contacto.getApellido(), this.numFila, 1);
+            this.modelo.setValueAt(this.contacto.getTelefono(), this.numFila, 2);
+        } else {
+            this.contacto = new Contacto();
+            this.contacto.setNombre( this.txtNombre.getText() );
+            this.contacto.setApellido( this.txtApellido.getText() );
+            this.contacto.setTelefono( this.txtTelefono.getText() );
+            this.lstContactos.registrar( this.contacto );
+            
+            this.modelo.addRow( this.contacto.getDatos() );
         }
-        //</editor-fold>
-
-        /* Create and display the form */
-        java.awt.EventQueue.invokeLater(new Runnable() {
-            public void run() {
-                new VContacto().setVisible(true);
-            }
-        });
-    }
+        this.setVisible( false );
+    }//GEN-LAST:event_btnGuardarActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnCancelar;

@@ -4,7 +4,11 @@
  */
 package ec.edu.ups.vista;
 
+import ec.edu.ups.controlador.GestionarContacto;
+import ec.edu.ups.modelo.Contacto;
 import javax.swing.JButton;
+import javax.swing.JOptionPane;
+import javax.swing.table.DefaultTableModel;
 
 /**
  *
@@ -12,6 +16,7 @@ import javax.swing.JButton;
  */
 public class AgendaContactos extends javax.swing.JFrame {
 
+    private GestionarContacto lstContactos;
     private TblContactos contactos;
     /**
      * Creates new form AgendaContactos
@@ -20,6 +25,7 @@ public class AgendaContactos extends javax.swing.JFrame {
         initComponents();
         this.setLocationRelativeTo( null );
         
+        this.lstContactos = new GestionarContacto();
         this.contactos = new TblContactos();
         this.contactos.verTabla( this.tblContactos );
     }
@@ -141,7 +147,7 @@ public class AgendaContactos extends javax.swing.JFrame {
     }//GEN-LAST:event_btnCancelarActionPerformed
 
     private void btnAgregarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAgregarActionPerformed
-        VContacto vcontacto = new VContacto();
+        VContacto vcontacto = new VContacto((DefaultTableModel) this.tblContactos.getModel(), this.lstContactos);
         vcontacto.setVisible( true );
     }//GEN-LAST:event_btnAgregarActionPerformed
 
@@ -158,10 +164,28 @@ public class AgendaContactos extends javax.swing.JFrame {
                 ((JButton)value).doClick();
                 JButton boton = (JButton) value;
                 if (boton.getName().equals("M")) {
-                    System.out.println("Modificar");
+                    Contacto contacto = new Contacto();
+                    contacto.setNombre( this.tblContactos.getValueAt( this.tblContactos.getSelectedRow(), 0).toString() );
+                    contacto.setApellido( this.tblContactos.getValueAt( this.tblContactos.getSelectedRow(), 1).toString() );
+                    contacto.setTelefono( this.tblContactos.getValueAt( this.tblContactos.getSelectedRow(), 2).toString() );
+                    
+                    VContacto vcontacto = new VContacto((DefaultTableModel) this.tblContactos.getModel(), contacto, this.tblContactos.getSelectedRow());
+                    vcontacto.setVisible( true );
                 }
                 if (boton.getName().equals("E")) {
-                    System.out.println("Eliminar");                    
+                    Object[] options = {"Si", "No"};
+                    int n = JOptionPane.showOptionDialog(this,
+                                "Esta seguro de eliminar el registro?",
+                                "Agenda de Contactos",
+                                JOptionPane.YES_NO_OPTION,
+                                JOptionPane.QUESTION_MESSAGE,
+                                null,     //do not use a custom Icon
+                                options,  //the titles of buttons
+                                options[0]); //default button title
+                    if (n == 0) {
+                        DefaultTableModel modelo = (DefaultTableModel) this.tblContactos.getModel();
+                        modelo.removeRow( fila );                        
+                    }
                 }
             }
         }

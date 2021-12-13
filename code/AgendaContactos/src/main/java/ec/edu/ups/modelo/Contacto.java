@@ -4,6 +4,9 @@
  */
 package ec.edu.ups.modelo;
 
+import java.util.Vector;
+import javax.swing.JButton;
+
 /**
  *
  * @author Guillermo Pizarro
@@ -45,5 +48,15 @@ public class Contacto {
 
     public void setTelefono(String telefono) {
         this.telefono = telefono;
+    }
+
+    public Object[] getDatos() {
+        JButton btnModificar = new JButton("Modificar");
+        btnModificar.setName("M");
+        JButton btnEliminar = new JButton("Eliminar");
+        btnEliminar.setName("E");
+
+        Object[] valores = { this.nombre, this.apellido, this.telefono, btnModificar, btnEliminar};
+        return valores;
     }
 }
